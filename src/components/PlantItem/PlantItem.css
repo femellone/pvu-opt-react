@@ -1,0 +1,15 @@
+.PlantItem {
+    display: flex;
+    flex-flow: column nowrap;
+    border: solid black 1px;
+    border-radius: 8px;
+    max-width: 150px;
+    max-height: 400px;
+    padding: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.PlantItem img {
+    height: 200px;
+}
