@@ -27,7 +27,7 @@ class Plant {
   }
 
   get plantsPerDay() {
-    return `${this.farmLe/1000} every ${this.farmHours/24} days`
+    return `${this.farmLe/10000} every ${this.farmHours/24} days`
   }
 }
 
@@ -55,12 +55,16 @@ function App() {
     })
   }
 
+  const filterPlantsByMaxDays = (plants, maxDays) => {
+    return !maxDays ? plants : plants.filter(plant => plant.farmHours/24 <= maxDays)
+  }
+
   const [plants, setPlants] = useState([])
-  const [motherPlants, setMotherPlants] = useState([])
 
   const [type, setType] = useState('')
   const [sortFactor, setSortFactor] = useState('production')
-  const [maxPrice, setMaxPrice] = useState(35)
+  const [maxPrice, setMaxPrice] = useState('')
+  const [maxDays, setMaxDays] = useState('')
 
   const [offset, setOffset] = useState(0)
 
@@ -78,21 +82,7 @@ function App() {
         const plants = respJson.data.map(plant => formatPlant(plant))
         setPlants(plants)
       })
-    
-    fetch(`https://backend-farm.plantvsundead.com/get-plants-filter-v2?offset=0&limit=1000`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNBZGRyZXNzIjoiMHgzYWIzNzJhZTcxYzY2NWFiZDQ0MDc0NGYwZjJlNmYzOTJkMWIyN2NjIiwibG9naW5UaW1lIjoxNjMyNjc4NjUyNzgzLCJjcmVhdGVEYXRlIjoiMjAyMS0wOS0yMSAwMToxODowOSIsImlhdCI6MTYzMjY3ODY1Mn0.Rr63n_28xjR6Uq5haFSQbPZ3N5U3LZWivDtq9IMm4PY'
-      },
-    })
-      .then(resp => resp.json())
-      .then(respJson => {
-        console.log(respJson)
-        const plants = respJson.data.map(plant => formatPlant(plant))
-        setMotherPlants(plants)
-      })
-  }, [offset, type])
+  }, [])
 
   // Filter possibilities
 
@@ -114,29 +104,14 @@ function App() {
     return plant.price <= maxPrice
   }) : []
 
-  const filteredPlants = !maxPrice ? filteredPlantsByType : filteredPlantsByPrice
+  let filteredPlants = !maxPrice ? filteredPlantsByType : filteredPlantsByPrice
 
-  const plantsSortedByLeProduction = sortOptions[sortFactor](filteredPlants)
+  filteredPlants = filterPlantsByMaxDays(filteredPlants, maxDays)
 
-  const plantsByPage = [...plantsSortedByLeProduction].splice(offset, offset + 10)
+  const plantsSortedBySelectedFactor = sortOptions[sortFactor](filteredPlants)
 
-  // Filter process for mother plants
-
-  const filteredMotherPlantsByType = motherPlants ? motherPlants.filter((plant) => {
-    if (!type) return plant
-
-    return plant.type === type
-  }) : []
-
-  const filteredMotherPlantsByPrice = filteredMotherPlantsByType.length ? filteredMotherPlantsByType.filter(plant => {
-    return plant.price <= maxPrice
-  }) : []
-
-  const filteredMotherPlants = !maxPrice ? filteredMotherPlantsByType : filteredMotherPlantsByPrice
-
-  const motherPlantsSortedByLeProduction = sortOptions[sortFactor](filteredMotherPlants)
-
-  const motherPlantsByPage = [...motherPlantsSortedByLeProduction].splice(offset, offset + 10)
+  // const plantsByPage = [...plantsSortedBySelectedFactor].splice(offset, offset + 10)
+  const plantsByPage = plantsSortedBySelectedFactor
 
   const goToPlantDescription = ( plantId ) => {
     // window.location.assign(`https://marketplace.plantvsundead.com/farm#/plant/${plantId}`)
@@ -149,25 +124,24 @@ function App() {
   return (
     <Fragment>
       <PlantFilter
+        pagesQty={Math.ceil(plantsSortedBySelectedFactor.length/10)}
         type={type}
         maxPrice={maxPrice}
         sortFactor={sortFactor}
         setType={setType}
         setMaxPrice={setMaxPrice}
+        setMaxDays={setMaxDays}
         setSortFactor={setSortFactor}
+        setOffset={ setOffset }
         plantsLength={ plants.length }
-        onPageChange={ setOffset }
       />
       <PlantList>
-        {plantsByPage.map(plant => (
-          <PlantItem key={ plant.id } plant={ plant } onClick={goToPlantDescription} />
-        ))}
-      </PlantList>
-
-      <PlantList>
-        {motherPlantsByPage.map(plant => (
-          <PlantItem key={ plant.id } plant={ plant } onClick={goToPlantDescription} />
-        ))}
+        {plantsByPage.length ?
+          plantsByPage.map(plant => (
+            <PlantItem key={ plant.id } plant={ plant } onClick={goToPlantDescription} />
+          ))
+          : <p>Cargando...</p>
+        }
       </PlantList>
     </Fragment>
   );

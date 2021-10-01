@@ -1,6 +1,18 @@
-import { Fragment } from 'react';
+import './PlantFilter.css'
 
-function PlantFilter({ type, setType, maxPrice, setMaxPrice, offset, setOffset, sortFactor, setSortFactor }) {
+function PlantFilter({
+    pagesQty,
+    type,
+    setType,
+    maxPrice,
+    maxDays,
+    setMaxPrice,
+    offset,
+    setOffset,
+    sortFactor,
+    setSortFactor,
+    setMaxDays,
+}) {
 
     const changeOffset = (newOffset) => {
         setOffset(newOffset)
@@ -18,29 +30,51 @@ function PlantFilter({ type, setType, maxPrice, setMaxPrice, offset, setOffset, 
         setSortFactor(event.target.value)
     }
 
+    const changeMaxDays = (event) => {
+        setMaxDays(event.target.value)
+    }
+
+    console.log(pagesQty)
+
     return (
-        <Fragment>
+        <div className="PlantFilter">
+            <label>Tipo</label>
             <select onInput={changeType} value={type}>
-                <option value="">All</option>
+                <option value="">Todos</option>
                 <option value="dark">Dark</option>
                 <option value="light">Light</option>
             </select>
 
-            <input type="number" onInput={changeMaxPrice} value={maxPrice} />
-            <br/>
+            <label>Ordenar por:</label>
             <select onInput={changeSortFactor} value={sortFactor}>
-                <option value="production">Production</option>
-                <option value="price">Price</option>
-                <option value="harvest">Harvest Time</option>
+                <option value="production">Producción</option>
+                <option value="price">Precio</option>
+                <option value="harvest">Tiempo para harvest</option>
             </select>
 
-            <button onClick={() => { changeOffset(0) }} disabled>Restart Offset</button>
-        </Fragment>
+            <br />
+            <hr />
+
+            <label>Precio máximo</label>
+            <input type="number" onInput={changeMaxPrice} value={maxPrice} />
+
+            <label>Días máximos</label>
+            <input type="number" onInput={changeMaxDays} value={maxDays} />
+
+            <br />
+            <hr />
+        </div>
     )
 }
 
-export { PlantFilter };
+// <ol className="paginator">
+//     {
+//         Array(pagesQty).fill(0).map((_, index) => {
+//             return <li key={'page' + index + 1}>
+//                 <button className={offset === index + 1 ? 'page-selected': ''} onClick={changeOffset(index)}>{index + 1}</button>
+//             </li>
+//         })
+//     }
+// </ol>
 
-// production
-// price
-// harvest
+export { PlantFilter };
