@@ -139,7 +139,11 @@ function App() {
   const motherPlantsByPage = [...motherPlantsSortedByLeProduction].splice(offset, offset + 10)
 
   const goToPlantDescription = ( plantId ) => {
-    window.location.assign(`https://marketplace.plantvsundead.com/farm#/plant/${plantId}`)
+    // window.location.assign(`https://marketplace.plantvsundead.com/farm#/plant/${plantId}`)
+    window.open(
+      `https://marketplace.plantvsundead.com/farm#/plant/${plantId}`,
+      '_blank' // <- This is what makes it open in a new window.
+    )
   }
 
   return (
