@@ -79,7 +79,7 @@ function App() {
         setPlants(plants)
       })
     
-    fetch(`https://backend-farm.plantvsundead.com/get-plants-filter-v2?offset=0&limit=20&sort=latest&type=2`, {
+    fetch(`https://backend-farm.plantvsundead.com/get-plants-filter-v2?offset=0&limit=1000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
