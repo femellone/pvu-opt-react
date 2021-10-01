@@ -7,16 +7,16 @@ function PlantFilter({
     maxPrice,
     maxDays,
     setMaxPrice,
-    offset,
-    setOffset,
+    // offset,
+    // setOffset,
     sortFactor,
     setSortFactor,
     setMaxDays,
 }) {
 
-    const changeOffset = (newOffset) => {
-        setOffset(newOffset)
-    }
+    // const changeOffset = (newOffset) => {
+    //     setOffset(newOffset)
+    // }
 
     const changeType = (event) => {
         setType(event.target.value)

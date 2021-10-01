@@ -66,7 +66,7 @@ function App() {
   const [maxPrice, setMaxPrice] = useState('')
   const [maxDays, setMaxDays] = useState('')
 
-  const [offset, setOffset] = useState(0)
+  // const [offset, setOffset] = useState(0)
 
   useEffect(() => {
     fetch(`https://backend-farm.plantvsundead.com/get-plants-filter-v2?offset=0&limit=10000`, {
@@ -132,7 +132,7 @@ function App() {
         setMaxPrice={setMaxPrice}
         setMaxDays={setMaxDays}
         setSortFactor={setSortFactor}
-        setOffset={ setOffset }
+        // setOffset={ setOffset }
         plantsLength={ plants.length }
       />
       <PlantList>
